@@ -1,59 +1,69 @@
-let arrayToDolist = [];
-const addBtn = document.getElementById("addBtn");
-const doToSection = document.getElementById("doToSection");
+document.addEventListener("DOMContentLoaded", () => {
+  let arrayToDolist = [];
+  const addBtn = document.getElementById("addBtn");
+  const doToSection = document.getElementById("doToSection");
 
-addBtn.addEventListener("click", () => {
-  const nameTask = window.prompt("Please enter the name of task :");
+  addBtn.addEventListener("click", () => {
+    const nameTask = window.prompt("Please enter the name of task :");
+    addTasks(nameTask);
+    showTasks();
+    localStorage.setItem("doToListTask", JSON.stringify(arrayToDolist));
+  });
 
-  addTasks(nameTask);
+  // Utilisation de l'event delegation sur doToSection
+  doToSection.addEventListener("click", (event) => {
+    if (event.target.classList.contains("delete-btn")) {
+      const taskToDelete = event.target.getAttribute("data-value");
+      arrayToDolist = arrayToDolist.filter(task => task !== taskToDelete);
+      localStorage.setItem("doToListTask", JSON.stringify(arrayToDolist));
+      showTasks();
+    }
+  });
+
+  /**
+   * Le traitement d'ajout des taches sur l'array
+   */
+  function addTasks(nameTask) {
+    if (nameTask) {
+      arrayToDolist.push(nameTask);
+    } else {
+      window.alert("You didn't get anything");
+    }
+  }
+
+  /**
+   * On affiche nos différents tache
+   */
+  function showTasks() {
+    doToSection.innerHTML = ""; // On nettoie avant d'afficher
+    const article = document.createElement("article");
+    // On ajoute les classe de Boostrap
+    article.classList.add("d-flex", "m-auto", "gap-5");
+
+    for (let taskName of arrayToDolist) {
+      let taskElement = document.createElement("p");
+      let buttonElement = document.createElement("button");
+
+      buttonElement.innerHTML = "X";
+      buttonElement.classList.add("delete-btn"); // Nouvelle classe au lieu d'un ID
+      buttonElement.setAttribute("data-value", taskName);
+
+      taskElement.textContent = taskName;
+      article.appendChild(buttonElement);
+      article.appendChild(taskElement);
+    }
+
+    doToSection.appendChild(article);
+  }
+
+  /**
+   * Si le localSorage n'est pas vide alors on récupère les données trouvé dans le localstorage
+   * et on réinsere sur notre tableau
+   */
+  if (localStorage.getItem("doToListTask")) {
+    let localStockage = JSON.parse(localStorage.getItem("doToListTask"));
+    arrayToDolist = arrayToDolist.concat(localStockage);
+  }
+
   showTasks();
-
-  // // Ceci permet de saisir un texte dans un prompt
-  // if (nameTask != null && nameTask != "") {
-  //   doToSection.innerHTML += `
-  //   <article class="p-2 bg-warning-subtle rounded-pill mb-2 d-flex justify-content-between">
-  //       <div>
-  //       ${nameTask}
-  //       </div>
-  //       <button class="btn btn-sm btn-danger rounded-circle" onclick='alert("OK")'">
-  //       X
-  //       </button>
-  //   </article>`;
-
-  //   localStorage.setItem("doToListTask", doToSection.innerHTML);
-  // } else {
-  //   window.alert("You didn't get anything");
-  // }
-
-  // console.log(localStorage.getItem("doToListTask"));
 });
-
-const localStorageToDoList = localStorage.getItem("doToListTask");
-console.log(localStorageToDoList);
-
-// Elle permet de supprimer tous ce qui se toruve sur le localstorage
-// localStorage.clear();
-
-function addTasks(nameTask) {
-  doToSection.innerHTML = "";
-  if (nameTask) {
-    arrayToDolist.push(nameTask);
-  } else {
-    window.alert("You didn't get anything");
-  }
-}
-
-function showTasks() {
-  // Je créer l'élément article en utilisant le createElement
-  var article = document.createElement("article");
-
-  for (let taskName of arrayToDolist) {
-    let taskElement = document.createElement("p"); // Crée un élément <p>
-    taskElement.textContent = taskName; // Assigne le texte
-    article.appendChild(taskElement); // Ajoute l'élément <p> à l'article
-  }
-
-  doToSection.appendChild(article); // Ajoute l'article à la section
-  localStorage.setItem("doToListTask", arrayToDolist);
-}
-
