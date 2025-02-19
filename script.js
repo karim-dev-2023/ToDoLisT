@@ -38,14 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
     doToSection.innerHTML = ""; // On nettoie avant d'afficher
     const article = document.createElement("article");
     // On ajoute les classe de Boostrap
-    article.classList.add("d-flex", "m-auto", "gap-5");
+    article.classList.add("d-flex", "m-auto", "gap-5","flex-column");
 
     for (let taskName of arrayToDolist) {
       let taskElement = document.createElement("p");
       let buttonElement = document.createElement("button");
 
       buttonElement.innerHTML = "X";
-      buttonElement.classList.add("delete-btn"); // Nouvelle classe au lieu d'un ID
+      buttonElement.classList.add("delete-btn","btn","btn-danger","btn-sm"); // Nouvelle classe au lieu d'un ID
       buttonElement.setAttribute("data-value", taskName);
 
       taskElement.textContent = taskName;
